@@ -8,10 +8,11 @@ app = Celery('upload')
 
 app.config_from_object('django.conf:settings')
 
-# Si tenemos nuestras tareas en un fichero de nombre tasks.py, esto nos permite indicarle a celery que encuentre automáticamente dicho módulo dentro del proyecto. De este modo no tenemos que añadirlo a la variable CELERY_IMPORTS del settings
+# Si tenemos nuestras tareas en un fichero de nombre tasks.py, esto nos permite indicarle a celery que encuentre automáticamente dicho módulo dentro del proyecto.
+# De este modo no tenemos que añadirlo a la variable CELERY_IMPORTS del settings
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
-# Ejemplo de tarea que muestra su propia información. El bind=True indica que hace referencia a su instancia de tarea actual.
-@app.task(bind=True)
-def debug_task(self):
-    print('Request: {0!r}'.format(self.request))
+app.conf.update(
+    BROKER_URL = 'redis://127.0.0.1:6379/0',
+    CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0',
+)

@@ -2,6 +2,8 @@ import os
 import djcelery
 djcelery.setup_loader()
 
+BROKER_URL = 'redis://127.0.0.1:6379/0'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,10 +27,10 @@ DJANGO_APPS = [
 
 # Third Party Applications
 THIRD_PARTY_APPS = [
-    'djcelery',
-    'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
+    'djcelery',
 ]
 
 # Aplicaciones Locales
@@ -97,23 +99,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-BROKER_URL = 'django://'
-#CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
-CELERY_BROKER_URL = 'amqp://localhost'
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'upload.settings')
-
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 1000,
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    )
 }
 
 # Internationalization
@@ -138,7 +130,6 @@ STATICFILES_DIRS = [
 MEDIA_URL   = '/media/'
 MEDIA_ROOT  = os.path.join(BASE_DIR, "upload/media")
 
-"""
 DEFAULT_FILE_STORAGE = os.environ['DEFAULT_FILE_STORAGE']
 STATICFILES_STORAGE = os.environ['DEFAULT_FILE_STORAGE']
 
@@ -146,14 +137,9 @@ STATICFILES_STORAGE = os.environ['DEFAULT_FILE_STORAGE']
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-
-# Google Cloud Storage
-GS_PROJECT_ID = os.environ['GS_PROJECT_ID']
-GS_BUCKET_NAME = os.environ['GS_BUCKET_NAME']
-GS_CREDENTIALS = os.environ['GS_CREDENTIALS']
-PRIVATE_KEY_ID = os.environ['PRIVATE_KEY_ID']
-PRIVATE_KEY = PRIVATE_KEY
-
-# Dropbox
-DROPBOX_OAUTH2_TOKEN=os.environ['DROPBOX_OAUTH2_TOKEN']
-"""
+AWS_S3_CUSTOM_DOMAIN = '{}.s3.amazonaws.com'.format(AWS_STORAGE_BUCKET_NAME)
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+#AWS_LOCATION = 'static'
+STATIC_URL = 'https://{}/'.format(AWS_S3_CUSTOM_DOMAIN)
