@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.parsers import MultiPartParser
@@ -22,7 +22,7 @@ class TicketList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user  # Current User
-        return Ticket.objects.filter(user=user).order_by('id')  # Filter drones by current user and ordered by id
+        return Ticket.objects.filter(user=user).order_by('id')  # Filter tickets by current user and ordered by id
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
