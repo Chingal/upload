@@ -1,43 +1,36 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from .constants import PENDING, STATUS_TYPE
 
-OPEN = '0'
-CLOSE = '1'
 
 class Ticket(models.Model):
-    STATUS_TYPE = (
-        (OPEN, 'OPEN'),
-        (CLOSE, 'CLOSE'),
-    )
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE) #Foreign Key - User
-    limit = models.IntegerField(validators=[MinValueValidator(1)])  # Limit greater than or equal to 1
-    status = models.CharField(max_length=10, choices=STATUS_TYPE, default=OPEN)
+    limit = models.PositiveIntegerField(validators=[MinValueValidator(1)], default=1)
+    status = models.CharField(max_length=15, choices=STATUS_TYPE, default=PENDING)
     created_at = models.DateTimeField(auto_now=True)
     modified_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["id"]
+        ordering = ["-created_at"]
 
     def __str__(self):
-        return "Ticket: {}".format(self.id)
+        return "Ticket: {} - User: {}".format(self.id, self.user.username)
+    
+    @property
+    def get_file_count(self):
+        return self.files.all().count()
 
 
 class File(models.Model):
-    def generate_path(instance, filename):
+    def generate_upload_path(instance, filename):
         return '/'.join(['upload', instance.ticket.user.username, filename])
 
     ticket = models.ForeignKey(Ticket, related_name='files', on_delete=models.CASCADE)
-    file = models.FileField(upload_to=generate_path)
+    file = models.FileField(upload_to=generate_upload_path, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-id"]
-
-    def save(self, *args, **kwargs):
-        if File.objects.filter(ticket=self.ticket).count() >= self.ticket.limit:
-            self.ticket.status = CLOSE
-            self.ticket.save()
-            return
-        super(File, self).save(*args, **kwargs)
+        ordering = ['-created_at']
 
     def __str__(self):
-        return "File: {}".format(self.id)
+        return "Image: {} - Ticket: {}".format(self.id, self.ticket.id)

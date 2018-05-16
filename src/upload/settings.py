@@ -1,8 +1,6 @@
 import os
-import djcelery
-djcelery.setup_loader()
 
-BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_URL = 'amqp://guest@localhost//'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,8 +27,6 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
-    'django_filters',
-    'djcelery',
 ]
 
 # Aplicaciones Locales
@@ -101,7 +97,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 1000,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
@@ -130,8 +125,8 @@ STATICFILES_DIRS = [
 MEDIA_URL   = '/media/'
 MEDIA_ROOT  = os.path.join(BASE_DIR, "upload/media")
 
-DEFAULT_FILE_STORAGE = os.environ['DEFAULT_FILE_STORAGE']
-STATICFILES_STORAGE = os.environ['DEFAULT_FILE_STORAGE']
+#DEFAULT_FILE_STORAGE = os.environ['DEFAULT_FILE_STORAGE']
+#STATICFILES_STORAGE = os.environ['DEFAULT_FILE_STORAGE']
 
 # Amazon S3 - AWS
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
@@ -139,9 +134,4 @@ AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
 AWS_S3_CUSTOM_DOMAIN = '{}.s3.amazonaws.com'.format(AWS_STORAGE_BUCKET_NAME)
 STATIC_URL = 'https://{}/'.format(AWS_S3_CUSTOM_DOMAIN)
-"""
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-AWS_LOCATION = 'static'
-"""
+#AWS_LOCATION = 'static'
