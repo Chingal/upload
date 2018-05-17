@@ -148,8 +148,8 @@ Upload Files
     		"ticket": id
 	}
 	
-Colaboradores
-=================
+Credits
+-------
 
-@chingal_
-@chingal-dev
+``Tickets`` was created by Rodrigo Chingal (`@chingal
+<https://github.com/chingal>`_)
