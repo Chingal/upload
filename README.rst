@@ -135,7 +135,7 @@ Upload Files
     
 .. code-block:: json
 
-	{"ticket": 5, "file": "path"}
+	{"ticket": 1, "file": "path"}
 
 * **Success Response**:
     * **Code**: ``200 OK``
@@ -145,7 +145,7 @@ Upload Files
 
 	{
         	"file": "/media/upload/admin/image.png",
-    		"ticket": id
+    		"ticket": 1
 	}
 	
 Credits
