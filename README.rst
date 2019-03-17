@@ -135,7 +135,7 @@ Upload Files
     
 .. code-block:: json
 
-	{"ticket": id, "file": path}
+	{"ticket": 5, "file": "path"}
 
 * **Success Response**:
     * **Code**: ``200 OK``
